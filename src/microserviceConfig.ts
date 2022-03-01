@@ -8,7 +8,7 @@ export const microserviceConfig: KafkaOptions = {
       brokers: ['localhost:9092'],
     },
     consumer: {
-      groupId: '1',
+      groupId: 'order',
       allowAutoTopicCreation: true,
     },
   },

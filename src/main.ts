@@ -5,7 +5,7 @@ import { microserviceConfig } from './microserviceConfig';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Order Service')
     .setDescription('The order API description')

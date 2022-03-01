@@ -8,6 +8,8 @@ import { HealthController } from './health/health.controller';
 import { HealthModule } from './health/health.module';
 import { mysql } from './sequelize.config';
 import { Order } from "./orders/models/orders.model";
+import { EventPublisherModule } from './event-publisher/event-publisher.module';
+import { EventHandlerModule } from './event-handler/event-handler.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { Order } from "./orders/models/orders.model";
     HealthModule,
     SequelizeModule.forRoot({...mysql, models: [Order]}),
     OrdersModule,
+    EventPublisherModule,
+    EventHandlerModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

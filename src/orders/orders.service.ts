@@ -2,27 +2,34 @@ import { Injectable } from "@nestjs/common";
 import { Order } from "./models/orders.model";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateOrdersDto } from "./dto/create-orders.dto";
-import { Client, ClientKafka } from "@nestjs/microservices";
-import { microserviceConfig } from "../microserviceConfig";
+import { EventPublisherService } from "../event-publisher/event-publisher.service";
 
 @Injectable()
 export class OrdersService {
-
-  @Client(microserviceConfig)
-  client: ClientKafka;
-
   constructor(
     @InjectModel(Order)
-    private readonly orderModel: typeof Order
+    private readonly orderModel: typeof Order,
+    private readonly eventPublisher: EventPublisherService
   ) {
   }
 
-  async create(createOrdersDto: CreateOrdersDto): Promise<Order> {
+  async create(createOrdersDto: CreateOrdersDto): Promise<any> {
     const order = await this.orderModel.create<Order>({ state: "PENDING", ...createOrdersDto });
-    if(order.id){
-      this.client.emit<string>('orders', JSON.stringify(order));
+    // TODO: Implement Transactional outbox pattern here. https://javascript.plainenglish.io/sequelize-transactions-4ca7b6491e86
+    if (order.id) {
+      const orderCreatedEvent = {
+        type: "ORDER_CREATED",
+        orderId: order.id,
+        customerId: order.customerId,
+        orderTotal: order.orderTotal
+      };
+      this.eventPublisher.publish("order", orderCreatedEvent);
     }
     return order;
+  }
+
+  async setStatus(id: string, state: string) {
+    return this.orderModel.update({ state }, { where: { id } });
   }
 
   async findAll(): Promise<Order[]> {

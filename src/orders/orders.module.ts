@@ -3,10 +3,14 @@ import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Order } from './models/orders.model';
+import { EventPublisherModule } from "../event-publisher/event-publisher.module";
+import { EventPublisherService } from "../event-publisher/event-publisher.service";
+import { EventHandlerModule } from "../event-handler/event-handler.module";
+import { EventHandlerService } from "../event-handler/event-handler.service";
 
 @Module({
-  imports: [SequelizeModule.forFeature([Order])],
-  providers: [OrdersService],
+  imports: [SequelizeModule.forFeature([Order]), EventPublisherModule, EventHandlerModule],
+  providers: [OrdersService, EventPublisherService, EventHandlerService],
   controllers: [OrdersController],
 })
 export class OrdersModule {}
