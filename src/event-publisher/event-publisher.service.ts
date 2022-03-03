@@ -7,7 +7,7 @@ export class EventPublisherService {
   @Client(microserviceConfig)
   client: ClientKafka;
 
-  publish(topic, event) {
+  publish(event, topic = "order") {
     this.client.emit<string>(topic, event);
   }
 }

@@ -10,12 +10,13 @@ import { mysql } from './sequelize.config';
 import { Order } from "./orders/models/orders.model";
 import { EventPublisherModule } from './event-publisher/event-publisher.module';
 import { EventHandlerModule } from './event-handler/event-handler.module';
+import { Outbox } from "./orders/models/outbox.model";
 
 @Module({
   imports: [
     TerminusModule,
     HealthModule,
-    SequelizeModule.forRoot({...mysql, models: [Order]}),
+    SequelizeModule.forRoot({...mysql, models: [Order, Outbox]}),
     OrdersModule,
     EventPublisherModule,
     EventHandlerModule,

@@ -3,6 +3,7 @@ import { OrdersService } from "./orders.service";
 import { CreateOrdersDto } from "./dto/create-orders.dto";
 import { EventPattern } from "@nestjs/microservices";
 import { EventHandlerService } from "../event-handler/event-handler.service";
+import { CustomerEvent, CustomerEventTypes } from "../event-publisher/models/events.model";
 
 @Controller("orders")
 export class OrdersController {
@@ -34,9 +35,12 @@ export class OrdersController {
   @EventPattern("customer")
   async handleCustomerEvents(payload: any) {
     this.eventHandlerService.handleEvent("customer", payload, () => {
-      const msg = payload.value;
-      console.log(msg);
-      this.orderService.setStatus(msg.orderId, msg.type);
+      const customerEvent: CustomerEvent = payload.value;
+      if (customerEvent.type === CustomerEventTypes.CREDIT_RESERVED) {
+        this.orderService.setStatus(customerEvent.orderId, "approved");
+      } else {
+        this.orderService.setStatus(customerEvent.orderId, "rejected");
+      }
     });
   }
 }
