@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from "@nestjs/common";
 import { OrdersService } from "./orders.service";
-import { CreateOrdersDto } from "./dto/create-orders.dto";
+import { OrderDto } from "./dto/order.dto";
 import { EventPattern } from "@nestjs/microservices";
 import { EventHandlerService } from "../event-handler/event-handler.service";
 import { CustomerEvent, CustomerEventTypes } from "../event-publisher/models/events.model";
@@ -13,7 +13,7 @@ export class OrdersController {
   }
 
   @Post()
-  create(@Body() createOrdersDto: CreateOrdersDto) {
+  create(@Body() createOrdersDto: OrderDto) {
     return this.orderService.create(createOrdersDto);
   }
 

@@ -1,3 +1,4 @@
+// Only for migrations for development env
 module.exports = {
   development: {
     dialect: 'mysql',
