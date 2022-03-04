@@ -1,7 +1,9 @@
-import { Order } from "./orders.entity";
-import { ORDER_REPOSITORY } from "../constants";
+import { Order } from './orders.entity';
+import { ORDER_REPOSITORY } from '../constants';
 
-export const ordersProviders = [{
-  provide: ORDER_REPOSITORY,
-  useValue: Order,
-}];
+export const ordersProviders = [
+  {
+    provide: ORDER_REPOSITORY,
+    useValue: Order,
+  },
+];
