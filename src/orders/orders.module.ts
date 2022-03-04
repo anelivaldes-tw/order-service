@@ -6,11 +6,13 @@ import { EventPublisherService } from "../event-publisher/event-publisher.servic
 import { EventHandlerModule } from "../event-handler/event-handler.module";
 import { EventHandlerService } from "../event-handler/event-handler.service";
 import { ordersProviders } from "./orders.providers";
+import { outboxProviders } from "./outbox/outbox.providers";
+import { databaseProviders } from "../database/database.providers";
 
 @Module({
   imports: [
     EventPublisherModule, EventHandlerModule],
-  providers: [OrdersService, ...ordersProviders,
+  providers: [OrdersService, ...ordersProviders, ...outboxProviders, ...databaseProviders,
     EventPublisherService,
     EventHandlerService],
   controllers: [OrdersController],
