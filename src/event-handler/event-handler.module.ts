@@ -1,8 +1,7 @@
-import { Module } from "@nestjs/common";
-import { EventHandlerService } from "./event-handler.service";
+import { Module } from '@nestjs/common';
+import { EventHandlerService } from './event-handler.service';
 
 @Module({
-  providers: [EventHandlerService]
+  providers: [EventHandlerService],
 })
-export class EventHandlerModule {
-}
+export class EventHandlerModule {}
