@@ -29,7 +29,6 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/sequelize": "^8.0.0",
     "@nestjs/swagger": "^5.2.0",
-    "@nestjs/terminus": "^8.0.4",
     "dotenv": "^16.0.0",
     "kafkajs": "^1.16.0",
     "mysql2": "^2.3.3",
