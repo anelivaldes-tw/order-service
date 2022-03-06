@@ -4,3 +4,6 @@ export const TEST = 'test';
 export const PRODUCTION = 'production';
 export const ORDER_REPOSITORY = 'ORDER_REPOSITORY';
 export const OUTBOX_REPOSITORY = 'OUTBOX_REPOSITORY';
+export const PENDING = 'PENDING'
+export const APPROVED = 'APPROVED'
+export const REJECTED = 'REJECTED'

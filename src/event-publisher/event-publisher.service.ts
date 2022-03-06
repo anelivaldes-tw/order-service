@@ -9,5 +9,7 @@ export class EventPublisherService {
 
   publish(event, topic = 'order') {
     this.client.emit<string>(topic, event);
+    console.debug('Published:', event);
+    console.debug('To:', topic);
   }
 }

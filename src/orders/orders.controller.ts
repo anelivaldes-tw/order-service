@@ -7,6 +7,7 @@ import {
   CustomerEvent,
   CustomerEventTypes,
 } from '../event-publisher/models/events.model';
+import { APPROVED, REJECTED } from '../constants';
 
 @Controller('orders')
 export class OrdersController {
@@ -40,9 +41,9 @@ export class OrdersController {
     this.eventHandlerService.handleEvent('customer', payload, () => {
       const customerEvent: CustomerEvent = payload.value;
       if (customerEvent.type === CustomerEventTypes.CREDIT_RESERVED) {
-        this.orderService.setStatus(customerEvent.orderId, 'approved');
+        this.orderService.setStatus(customerEvent.orderId, APPROVED);
       } else {
-        this.orderService.setStatus(customerEvent.orderId, 'rejected');
+        this.orderService.setStatus(customerEvent.orderId, REJECTED);
       }
     });
   }
