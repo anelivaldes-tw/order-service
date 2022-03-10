@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Order } from './orders.entity';
 import { OrderDto } from './dto/order.dto';
-import { ORDER_REPOSITORY, OUTBOX_REPOSITORY, PENDING, SEQUELIZE } from '../constants';
+import { ORDER_REPOSITORY, OrderState, OUTBOX_REPOSITORY, SEQUELIZE } from '../constants';
 import { Outbox } from './outbox/outbox.entity';
+import { OutboxMsg } from './outbox/outbox-msg.interface';
 
 @Injectable()
 export class OrdersService {
@@ -13,15 +14,16 @@ export class OrdersService {
   ) {
   }
 
-  async create(createOrdersDto: OrderDto): Promise<any> {
+  async createPendingOrder(createOrdersDto: OrderDto): Promise<any> {
     try {
+      console.log(`Creating a new Order`);
       return await this.sequelize.transaction(async (t) => {
         const order = await this.orderRepository.create<Order>(
-          { state: PENDING, ...createOrdersDto },
+          { state: OrderState.PENDING, ...createOrdersDto },
           { transaction: t },
         );
-        const outboxOrder = {
-          type: order.state,
+        const outboxOrder: OutboxMsg = {
+          state: order.state,
           orderTotal: order.orderTotal,
           customerId: order.customerId,
           orderId: order.id,
@@ -30,6 +32,7 @@ export class OrdersService {
         await this.outboxRepository.create<Outbox>(outboxOrder, {
           transaction: t,
         });
+        console.log(`Created Pending Order ---> Order id: ${order.id}`);
         return order;
       });
     } catch (error) {
@@ -37,8 +40,12 @@ export class OrdersService {
     }
   }
 
-  async setStatus(id: string, state: string) {
-    return this.orderRepository.update({ state }, { where: { id } });
+  async rejectOrder(id: string) {
+    return this.orderRepository.update({ state: OrderState.REJECTED }, { where: { id } });
+  }
+
+  async approveOrder(id: string) {
+    return this.orderRepository.update({ state: OrderState.APPROVED }, { where: { id } });
   }
 
   async findAll(): Promise<Order[]> {

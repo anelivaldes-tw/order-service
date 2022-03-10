@@ -7,18 +7,18 @@ import {
   CustomerEvent,
   CustomerEventTypes,
 } from '../event-publisher/models/events.model';
-import { APPROVED, REJECTED } from '../constants';
 
 @Controller('orders')
 export class OrdersController {
   constructor(
     private readonly orderService: OrdersService,
     private readonly eventHandlerService: EventHandlerService,
-  ) {}
+  ) {
+  }
 
   @Post()
   create(@Body() createOrdersDto: OrderDto) {
-    return this.orderService.create(createOrdersDto);
+    return this.orderService.createPendingOrder(createOrdersDto);
   }
 
   @Get()
@@ -41,9 +41,9 @@ export class OrdersController {
     this.eventHandlerService.handleEvent('customer', payload, () => {
       const customerEvent: CustomerEvent = payload.value;
       if (customerEvent.type === CustomerEventTypes.CREDIT_RESERVED) {
-        this.orderService.setStatus(customerEvent.orderId, APPROVED);
+        this.orderService.approveOrder(customerEvent.orderId);
       } else {
-        this.orderService.setStatus(customerEvent.orderId, REJECTED);
+        this.orderService.rejectOrder(customerEvent.orderId);
       }
     });
   }
