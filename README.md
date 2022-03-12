@@ -6,4 +6,4 @@ Using `Transactional outbox pattern`, it publishes `Order`
 domain events that are consumed by the `Customer Service`.
 
 
-![schema registry](./create_order_saga.png)
+![create_order_saga](./create_order_saga.png)
