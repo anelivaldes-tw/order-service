@@ -5,6 +5,7 @@ services:
 
   db:
     image: mysql
+    container_name: db_mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -12,11 +13,13 @@ services:
     ports:
       - 3306:3306
   adminer:
+    container_name: db_adminer
     image: adminer
     restart: always
     ports:
       - 8080:8080
   zookeeper:
+    container_name: zookeeper
     image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -24,6 +27,7 @@ services:
     ports:
       - "22181:2181"
   kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
@@ -38,6 +42,7 @@ services:
       - "9092:9092"
       - "29092:29092"
   schema-registry:
+    container_name: schema-registry
     image: confluentinc/cp-schema-registry
     depends_on:
       - kafka
