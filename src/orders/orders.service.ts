@@ -1,7 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Order } from './orders.entity';
 import { OrderDto } from './dto/order.dto';
-import { ORDER_REPOSITORY, OrderState, OUTBOX_REPOSITORY, SEQUELIZE } from '../constants';
+import {
+  ORDER_REPOSITORY,
+  OrderState,
+  OUTBOX_REPOSITORY,
+  SEQUELIZE,
+} from '../constants';
 import { Outbox } from './outbox/outbox.entity';
 import { OutboxMsg } from './outbox/outbox-msg.interface';
 
@@ -11,8 +16,7 @@ export class OrdersService {
     @Inject(ORDER_REPOSITORY) private readonly orderRepository: typeof Order,
     @Inject(OUTBOX_REPOSITORY) private readonly outboxRepository: typeof Outbox,
     @Inject(SEQUELIZE) private readonly sequelize,
-  ) {
-  }
+  ) {}
 
   async createPendingOrder(createOrdersDto: OrderDto): Promise<any> {
     try {
@@ -40,12 +44,40 @@ export class OrdersService {
     }
   }
 
+  async updateOrderState(id: string, state: OrderState) {
+    return await this.sequelize.transaction(async (t) => {
+      await this.orderRepository.update({ state }, { where: { id } });
+      const order = await this.orderRepository.findOne({
+        where: {
+          id,
+        },
+      });
+      const outboxOrder: OutboxMsg = {
+        state: order.state,
+        orderTotal: order.orderTotal,
+        customerId: order.customerId,
+        orderId: order.id,
+        sent: 0,
+      };
+      await this.outboxRepository.create<Outbox>(outboxOrder, {
+        transaction: t,
+      });
+      console.log(
+        `Updating Order State ---> Order id: ${order.id} State: ${order.state}`,
+      );
+      return order;
+    });
+  }
+  catch(error) {
+    console.error(error);
+  }
+
   async rejectOrder(id: string) {
-    return this.orderRepository.update({ state: OrderState.REJECTED }, { where: { id } });
+    await this.updateOrderState(id, OrderState.REJECTED);
   }
 
   async approveOrder(id: string) {
-    return this.orderRepository.update({ state: OrderState.APPROVED }, { where: { id } });
+    await this.updateOrderState(id, OrderState.APPROVED);
   }
 
   async findAll(): Promise<Order[]> {
