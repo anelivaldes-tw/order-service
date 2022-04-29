@@ -159,6 +159,37 @@
 							"variable": [
 								{
 									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order-history (http://localhost:3001/api/)",
+			"item": [
+				{
+					"name": "orders by customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3003/customers/:customerId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3003",
+							"path": [
+								"customers",
+								":customerId"
+							],
+							"variable": [
+								{
+									"key": "customerId",
 									"value": "1"
 								}
 							]
