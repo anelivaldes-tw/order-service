@@ -42,7 +42,11 @@ export class OrdersController {
       const customerEvent: CustomerEvent = payload.value;
       if (customerEvent.type === CustomerEventTypes.CREDIT_RESERVED) {
         this.orderService.approveOrder(customerEvent.orderId);
-      } else {
+      }
+      if (
+        customerEvent.type === CustomerEventTypes.CUSTOMER_VALIDATION_FAILED ||
+        customerEvent.type === CustomerEventTypes.CREDIT_RESERVATION_FAILED
+      ) {
         this.orderService.rejectOrder(customerEvent.orderId);
       }
     });
